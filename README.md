@@ -1,4 +1,5 @@
-# YiliAdmin脚手架：Java后端
+# ProtoHub
+一个纯粹的产品管理
 
 
 ## 初始账号
