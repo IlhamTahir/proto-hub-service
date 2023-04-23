@@ -16,7 +16,6 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)

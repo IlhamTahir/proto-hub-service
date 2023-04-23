@@ -15,12 +15,30 @@ public abstract class BaseService {
 
     private UserRepository userRepository;
 
+    private User currentUser;
+
+    protected boolean isUserExisted(String id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.isPresent();
+    }
+
+    protected User getUserById(String id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new BizException(ExceptionType.USER_NOT_FOUND);
+        }
+        return user.get();
+    }
+
 
     protected User getCurrentUserEntity() {
+        if (this.currentUser != null) {
+            return currentUser;
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // todo
-        return loadUserByUsername(authentication.getName());
+        currentUser = loadUserByUsername(authentication.getName());
+        return currentUser;
     }
 
     protected User loadUserByUsername(String username) {
