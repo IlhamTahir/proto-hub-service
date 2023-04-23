@@ -4,6 +4,7 @@ import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.proto.dto.ProjectCreateRequest;
 import com.bilitech.api.proto.dto.ProjectPageFilter;
 import com.bilitech.api.proto.dto.ProtoCreateRequest;
+import com.bilitech.api.proto.dto.ProtoPageFilter;
 import com.bilitech.api.proto.mapper.ProjectMapper;
 import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.service.ProjectService;
@@ -30,6 +31,11 @@ public class ProjectController {
         return projectMapper.toVo(projectService.create(projectCreateRequest));
     }
 
+    @GetMapping("/{id}")
+    ProjectVo get(@PathVariable String id) {
+        return projectMapper.toVo(projectService.get(id));
+    }
+
     @GetMapping
     PageResult<ProjectVo> page(@Validated ProjectPageFilter projectPageFilter) {
         return new PageResult<>(projectService.page(projectPageFilter).map(projectMapper::toVo));
@@ -39,6 +45,11 @@ public class ProjectController {
     @PostMapping("/{id}/proto")
     ProtoVo createProto(@PathVariable String id, @RequestBody @Validated ProtoCreateRequest protoCreateRequest) {
         return protoMapper.toVo(projectService.createProto(id, protoCreateRequest));
+    }
+
+    @GetMapping("/{id}/proto")
+    PageResult<ProtoVo> protoPage(@PathVariable String id, @Validated ProtoPageFilter protoPageFilter) {
+        return new PageResult<>(projectService.protoPage(id, protoPageFilter).map(protoMapper::toVo));
     }
 
 

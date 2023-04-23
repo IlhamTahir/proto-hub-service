@@ -4,6 +4,7 @@ import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.core.dto.UserDto;
 import com.bilitech.api.core.service.BaseTest;
 import com.bilitech.api.proto.dto.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -14,6 +15,8 @@ class ProjectServiceTest extends BaseTest {
 
     @Autowired
     ProjectService projectService;
+
+    ProjectDto testProject;
 
 
     @Test
@@ -26,13 +29,13 @@ class ProjectServiceTest extends BaseTest {
         assertEquals("admin", savedProject.getUpdatedBy().getUsername());
     }
 
-    ProjectDto createTestProject(String name) {
-        ProjectCreateRequest projectCreateRequest = new ProjectCreateRequest();
-        projectCreateRequest.setName(name);
-        UserDto userDto = createTestUser("productOwner1", "123456");
-        projectCreateRequest.setProductOwnerId(userDto.getId());
-        return projectService.create(projectCreateRequest);
+    @Test
+    @WithMockUser(username = "admin")
+    void get() {
+        projectService.get(this.testProject.getId());
     }
+
+
 
     @Test
     @WithMockUser(username = "admin")
@@ -45,8 +48,27 @@ class ProjectServiceTest extends BaseTest {
         assertEquals("测试迭代", savedProto.getName());
     }
 
+
     @Test
     @WithMockUser(username = "admin")
     void page() {
     }
+
+
+    @BeforeEach
+    void initTestProject() {
+        this.testProject = createTestProject("测试项目-Test");
+    }
+
+    ProjectDto createTestProject(String name) {
+        ProjectCreateRequest projectCreateRequest = new ProjectCreateRequest();
+        projectCreateRequest.setName(name);
+        UserDto userDto = createTestUser("productOwner1", "123456");
+        projectCreateRequest.setProductOwnerId(userDto.getId());
+        return projectService.create(projectCreateRequest);
+    }
+
+
+
+
 }

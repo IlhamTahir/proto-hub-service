@@ -3,6 +3,8 @@ package com.bilitech.api.proto.service.impl;
 import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.core.exception.BizException;
 import com.bilitech.api.core.exception.ExceptionType;
+import com.bilitech.api.core.repository.specs.SearchCriteria;
+import com.bilitech.api.core.repository.specs.SearchOperation;
 import com.bilitech.api.core.service.impl.BaseService;
 import com.bilitech.api.proto.dto.*;
 import com.bilitech.api.proto.entity.Project;
@@ -13,11 +15,13 @@ import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.repository.ProjectRepository;
 import com.bilitech.api.proto.repository.ProtoRepository;
 import com.bilitech.api.proto.repository.specs.ProjectSpecification;
+import com.bilitech.api.proto.repository.specs.ProtoSpecification;
 import com.bilitech.api.proto.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -47,6 +51,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
         return mapper.toDto(savedProject);
     }
 
+
+    @Override
+    public ProjectDto get(String id) {
+        return mapper.toDto(getProjectEntity(id));
+    }
+
     @Override
     public Page<ProjectDto> page(ProjectPageFilter projectPageFilter) {
         ProjectSpecification specification = new ProjectSpecification();
@@ -55,15 +65,37 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
 
     @Override
     public ProtoDto createProto(String id, ProtoCreateRequest protoCreateRequest) {
+        Project project = getProjectEntity(id);
+        Proto proto = protoMapper.createEntity(protoCreateRequest);
+        proto.setCreatedBy(getCurrentUserEntity());
+        proto.setUpdatedBy(getCurrentUserEntity());
+        proto.setProject(project);
+        return protoMapper.toDto(protoRepository.save(proto));
+    }
+
+    @Override
+    public Page<ProtoDto> protoPage(String id, ProtoPageFilter protoPageFilter) {
+        Project project = getProjectEntity(id);
+
+        ProtoSpecification specs = new ProtoSpecification();
+
+        specs.add(new SearchCriteria("project", project, SearchOperation.EQUAL));
+
+        // ToDo: 需要重构
+        if (!Objects.equals(protoPageFilter.getStatus(), null)) {
+            specs.add(new SearchCriteria("status", protoPageFilter.getStatus(), SearchOperation.EQUAL));
+        }
+
+
+        return protoRepository.findAll(specs, protoPageFilter.toPageable()).map(protoMapper::toDto);
+    }
+
+    Project getProjectEntity(String id) {
         Optional<Project> optionalProject = repository.findById(id);
         if (!optionalProject.isPresent()) {
             throw new BizException(ExceptionType.NOT_FOUND);
         }
-        Proto proto = protoMapper.createEntity(protoCreateRequest);
-        proto.setCreatedBy(getCurrentUserEntity());
-        proto.setUpdatedBy(getCurrentUserEntity());
-        proto.setProject(optionalProject.get());
-        return protoMapper.toDto(protoRepository.save(proto));
+        return optionalProject.get();
     }
 
     @Autowired

@@ -6,8 +6,12 @@ import org.springframework.data.domain.Page;
 public interface ProjectService {
     ProjectDto create(ProjectCreateRequest projectCreateRequest);
 
+    ProjectDto get(String id);
+
     Page<ProjectDto> page(ProjectPageFilter projectPageFilter);
 
 
     ProtoDto createProto(String id, ProtoCreateRequest protoCreateRequest);
+
+    Page<ProtoDto> protoPage(String id, ProtoPageFilter protoPageFilter);
 }
