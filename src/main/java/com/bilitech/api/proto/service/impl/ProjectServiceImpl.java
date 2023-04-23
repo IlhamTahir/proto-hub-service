@@ -90,6 +90,16 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
         return protoRepository.findAll(specs, protoPageFilter.toPageable()).map(protoMapper::toDto);
     }
 
+    @Override
+    public ProtoDto getProto(String id, String protoId) {
+        Project project = getProjectEntity(id);
+        Optional<Proto> optionalProto = protoRepository.findByProjectAndId(project, protoId);
+        if (!optionalProto.isPresent()) {
+            throw new BizException(ExceptionType.NOT_FOUND);
+        }
+        return protoMapper.toDto(optionalProto.get());
+    }
+
     Project getProjectEntity(String id) {
         Optional<Project> optionalProject = repository.findById(id);
         if (!optionalProject.isPresent()) {

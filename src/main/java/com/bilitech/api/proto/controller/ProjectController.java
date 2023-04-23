@@ -52,6 +52,11 @@ public class ProjectController {
         return new PageResult<>(projectService.protoPage(id, protoPageFilter).map(protoMapper::toVo));
     }
 
+    @GetMapping("/{id}/proto/{protoId}")
+    ProtoVo getProto(@PathVariable String id, @PathVariable String protoId) {
+        return protoMapper.toVo(projectService.getProto(id, protoId));
+    }
+
 
     @Autowired
     public void setProjectService(ProjectService projectService) {

@@ -13,5 +13,7 @@ public interface ProjectService {
 
     ProtoDto createProto(String id, ProtoCreateRequest protoCreateRequest);
 
+    ProtoDto getProto(String id, String protoId);
+
     Page<ProtoDto> protoPage(String id, ProtoPageFilter protoPageFilter);
 }
