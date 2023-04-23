@@ -1,15 +1,17 @@
 package com.bilitech.api.proto.controller;
 
+import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.proto.dto.ProjectCreateRequest;
+import com.bilitech.api.proto.dto.ProjectPageFilter;
+import com.bilitech.api.proto.dto.ProtoCreateRequest;
 import com.bilitech.api.proto.mapper.ProjectMapper;
+import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.service.ProjectService;
 import com.bilitech.api.proto.vo.ProjectVo;
+import com.bilitech.api.proto.vo.ProtoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/project")
@@ -17,13 +19,28 @@ public class ProjectController {
 
     ProjectService projectService;
 
+
     ProjectMapper projectMapper;
+
+    ProtoMapper protoMapper;
 
 
     @PostMapping
     ProjectVo create(@RequestBody @Validated ProjectCreateRequest projectCreateRequest) {
         return projectMapper.toVo(projectService.create(projectCreateRequest));
     }
+
+    @GetMapping
+    PageResult<ProjectVo> page(@Validated ProjectPageFilter projectPageFilter) {
+        return new PageResult<>(projectService.page(projectPageFilter).map(projectMapper::toVo));
+    }
+
+
+    @PostMapping("/{id}/proto")
+    ProtoVo createProto(@PathVariable String id, @RequestBody @Validated ProtoCreateRequest protoCreateRequest) {
+        return protoMapper.toVo(projectService.createProto(id, protoCreateRequest));
+    }
+
 
     @Autowired
     public void setProjectService(ProjectService projectService) {
@@ -33,5 +50,10 @@ public class ProjectController {
     @Autowired
     public void setProjectMapper(ProjectMapper projectMapper) {
         this.projectMapper = projectMapper;
+    }
+
+    @Autowired
+    public void setProtoMapper(ProtoMapper protoMapper) {
+        this.protoMapper = protoMapper;
     }
 }

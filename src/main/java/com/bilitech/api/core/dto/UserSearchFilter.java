@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-
 public class UserSearchFilter extends BaseSearchFilter {
     private String username;
 }
