@@ -15,6 +15,7 @@ import com.tencent.cloud.CosStsClient;
 import com.tencent.cloud.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.util.Date;
@@ -52,6 +53,11 @@ public class CosStorageServiceImpl implements StorageService {
             e.printStackTrace();
             throw new BizException(ExceptionType.INNER_ERROR);
         }
+    }
+
+    @Override
+    public void upload(MultipartFile file) {
+
     }
 
     @Override

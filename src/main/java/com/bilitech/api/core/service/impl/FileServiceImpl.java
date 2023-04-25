@@ -16,8 +16,13 @@ import com.bilitech.api.core.utils.FileTypeTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,7 +70,22 @@ public class FileServiceImpl extends BaseService implements FileService {
 
     // Todo: 后台设置当前Storage
     public Storage getDefaultStorage() {
-        return Storage.COS;
+        return Storage.LOCAL;
+    }
+
+    @Override
+    public void upload(String id, MultipartFile file) {
+        File fileEntity = getFileEntity(id);
+        if(!fileEntity.getStatus().equals(FileStatus.UPLOADING)) {
+            throw new BizException(ExceptionType.INNER_ERROR);
+        }
+        try {
+            storageServices.get(getDefaultStorage().name()).upload(file);
+        } catch (Exception e) {
+            throw new BizException(ExceptionType.INNER_ERROR);
+        }
+        fileEntity.setStatus(FileStatus.UPLOADED);
+        repository.save(fileEntity);
     }
 
     @Override

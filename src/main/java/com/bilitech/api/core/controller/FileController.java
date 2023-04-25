@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -27,6 +28,11 @@ public class FileController {
     @PostMapping("/upload_init")
     public FileUploadVo initUpload(@Validated @RequestBody FileUploadRequest fileUploadRequest) throws IOException {
         return fileUploadMapper.toVo(fileService.initUpload(fileUploadRequest));
+    }
+
+    @PostMapping("/{id}")
+    public void upload(@PathVariable String id, MultipartFile file) {
+        fileService.upload(id, file);
     }
 
     @PostMapping("/{id}/upload_finish")
