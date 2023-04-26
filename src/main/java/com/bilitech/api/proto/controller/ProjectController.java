@@ -1,6 +1,7 @@
 package com.bilitech.api.proto.controller;
 
 import com.bilitech.api.core.dto.PageResult;
+import com.bilitech.api.core.vo.PageVo;
 import com.bilitech.api.proto.dto.ProjectCreateRequest;
 import com.bilitech.api.proto.dto.ProjectPageFilter;
 import com.bilitech.api.proto.dto.ProtoCreateRequest;
@@ -15,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/projects")
 public class ProjectController {
 
     ProjectService projectService;
@@ -37,8 +38,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    PageResult<ProjectVo> page(@Validated ProjectPageFilter projectPageFilter) {
-        return new PageResult<>(projectService.page(projectPageFilter).map(projectMapper::toVo));
+    PageVo<ProjectVo> page(@Validated ProjectPageFilter projectPageFilter) {
+        return new PageVo<>(projectService.page(projectPageFilter).map(projectMapper::toVo));
     }
 
 
@@ -48,8 +49,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/proto")
-    PageResult<ProtoVo> protoPage(@PathVariable String id, @Validated ProtoPageFilter protoPageFilter) {
-        return new PageResult<>(projectService.protoPage(id, protoPageFilter).map(protoMapper::toVo));
+    PageVo<ProtoVo> protoPage(@PathVariable String id, @Validated ProtoPageFilter protoPageFilter) {
+        return new PageVo<>(projectService.protoPage(id, protoPageFilter).map(protoMapper::toVo));
     }
 
     @GetMapping("/{id}/proto/{protoId}")
