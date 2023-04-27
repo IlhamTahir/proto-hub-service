@@ -2,18 +2,19 @@ package com.bilitech.api.proto.controller;
 
 import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.core.vo.PageVo;
-import com.bilitech.api.proto.dto.ProjectCreateRequest;
-import com.bilitech.api.proto.dto.ProjectPageFilter;
-import com.bilitech.api.proto.dto.ProtoCreateRequest;
-import com.bilitech.api.proto.dto.ProtoPageFilter;
+import com.bilitech.api.proto.dto.*;
 import com.bilitech.api.proto.mapper.ProjectMapper;
 import com.bilitech.api.proto.mapper.ProtoMapper;
+import com.bilitech.api.proto.mapper.VersionMapper;
 import com.bilitech.api.proto.service.ProjectService;
 import com.bilitech.api.proto.vo.ProjectVo;
 import com.bilitech.api.proto.vo.ProtoVo;
+import com.bilitech.api.proto.vo.VersionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/projects")
@@ -25,6 +26,8 @@ public class ProjectController {
     ProjectMapper projectMapper;
 
     ProtoMapper protoMapper;
+
+    VersionMapper versionMapper;
 
 
     @PostMapping
@@ -58,6 +61,13 @@ public class ProjectController {
         return protoMapper.toVo(projectService.getProto(id, protoId));
     }
 
+    @PostMapping("/{id}/proto/{protoId}/version")
+    VersionVo createVersion(@PathVariable String id,
+                            @PathVariable String protoId,
+                            @RequestBody @Validated VersionCreateRequest versionCreateRequest) throws IOException {
+        return versionMapper.toVo(projectService.createVersion(id, protoId, versionCreateRequest));
+    }
+
 
     @Autowired
     public void setProjectService(ProjectService projectService) {
@@ -72,5 +82,10 @@ public class ProjectController {
     @Autowired
     public void setProtoMapper(ProtoMapper protoMapper) {
         this.protoMapper = protoMapper;
+    }
+
+    @Autowired
+    public void setVersionMapper(VersionMapper versionMapper) {
+        this.versionMapper = versionMapper;
     }
 }

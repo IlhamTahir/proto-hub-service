@@ -23,4 +23,6 @@ public class Version extends TraceableBaseEntity {
     @OneToOne
     @JoinColumn(name = "file_id")
     private File file;
+
+    private String demoPath;
 }

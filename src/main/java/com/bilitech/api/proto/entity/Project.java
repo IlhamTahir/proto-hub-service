@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -14,6 +15,7 @@ import javax.persistence.*;
 public class Project extends TraceableBaseEntity {
 
     private String name;
+
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;

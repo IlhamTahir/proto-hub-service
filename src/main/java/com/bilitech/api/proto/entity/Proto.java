@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.Date;
+
 
 @Data
 @Entity
@@ -20,4 +22,12 @@ public class Proto extends TraceableBaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ProtoStatus status = ProtoStatus.TO_DEVELOP;
+
+    private Integer lastVersionNumber;
+
+    private Date lastVersionUpdatedTime;
+
+    private String lastVersionLog;
+
+    private Integer baselineVersionNumber;
 }

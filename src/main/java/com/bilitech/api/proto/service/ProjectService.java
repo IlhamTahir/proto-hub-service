@@ -3,6 +3,8 @@ package com.bilitech.api.proto.service;
 import com.bilitech.api.proto.dto.*;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
+
 public interface ProjectService {
     ProjectDto create(ProjectCreateRequest projectCreateRequest);
 
@@ -16,4 +18,6 @@ public interface ProjectService {
     ProtoDto getProto(String id, String protoId);
 
     Page<ProtoDto> protoPage(String id, ProtoPageFilter protoPageFilter);
+
+    VersionDto createVersion(String id, String protoId, VersionCreateRequest versionCreateRequest) throws IOException;
 }
