@@ -13,4 +13,7 @@ public class VersionVo extends BaseVo {
     private ProtoVo proto;
 
     private FileVo file;
+
+    private String demoPath;
+
 }

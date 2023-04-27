@@ -23,6 +23,8 @@ public class Proto extends TraceableBaseEntity {
     @Enumerated(EnumType.STRING)
     private ProtoStatus status = ProtoStatus.TO_DEVELOP;
 
+    private String lastVersionId;
+
     private Integer lastVersionNumber;
 
     private Date lastVersionUpdatedTime;
@@ -30,4 +32,5 @@ public class Proto extends TraceableBaseEntity {
     private String lastVersionLog;
 
     private Integer baselineVersionNumber;
+
 }

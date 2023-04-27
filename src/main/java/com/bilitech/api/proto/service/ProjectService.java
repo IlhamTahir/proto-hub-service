@@ -20,4 +20,6 @@ public interface ProjectService {
     Page<ProtoDto> protoPage(String id, ProtoPageFilter protoPageFilter);
 
     VersionDto createVersion(String id, String protoId, VersionCreateRequest versionCreateRequest) throws IOException;
+
+    VersionDto getVersion(String id, String protoId, String versionId);
 }

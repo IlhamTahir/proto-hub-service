@@ -140,9 +140,10 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
 
         String indexPath = ZipUtil.unzipAndGetIndexPath(sourceFileDest, targetDemoDest);
 
-        version.setDemoPath(indexPath);
+        version.setDemoPath(indexPath.replaceAll(fileDir, ""));
 
         Version savedVersion = versionRepository.saveAndFlush(version);
+        proto.setLastVersionId(savedVersion.getId());
         proto.setLastVersionNumber(savedVersion.getNumber());
         proto.setLastVersionUpdatedTime(savedVersion.getCreatedTime());
         proto.setLastVersionLog(savedVersion.getLog());
@@ -151,6 +152,14 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
 
 
         return versionMapper.toDto(savedVersion);
+    }
+
+    @Override
+    public VersionDto getVersion(String id, String protoId, String versionId) {
+        Project project = getProjectEntity(id);
+        Proto proto = getProtoEntity(project, protoId);
+        Version version = getVersionEntity(proto, versionId);
+        return versionMapper.toDto(version);
     }
 
     Project getProjectEntity(String id) {
@@ -166,11 +175,16 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
         if (!optionalProto.isPresent()) {
             throw new BizException(ExceptionType.NOT_FOUND);
         }
-        Proto proto = optionalProto.get();
-        if (!proto.getProject().equals(project)) {
+
+        return optionalProto.get();
+    }
+
+    Version getVersionEntity(Proto proto, String versionId) {
+        Optional<Version> optionalVersion = versionRepository.findByProtoAndId(proto, versionId);
+        if (!optionalVersion.isPresent()) {
             throw new BizException(ExceptionType.NOT_FOUND);
         }
-        return proto;
+        return optionalVersion.get();
     }
 
     @Autowired

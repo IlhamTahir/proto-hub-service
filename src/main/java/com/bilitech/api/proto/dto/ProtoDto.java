@@ -15,6 +15,9 @@ public class ProtoDto extends TraceableBaseDto {
 
     private ProtoStatus status;
 
+    private String lastVersionId;
+
+
     private Integer lastVersionNumber;
 
     private Date lastVersionUpdatedTime;

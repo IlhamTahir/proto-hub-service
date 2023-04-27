@@ -35,10 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
+                .headers().frameOptions().disable().and()
                 .authorizeRequests()
                 .antMatchers(CREATE_TOKEN_URL).permitAll()
                 .antMatchers(SITE_SETTING_URL).permitAll()
                 .antMatchers("/playlists/**").permitAll()
+                .antMatchers("/demo/**").permitAll()
                 .antMatchers("/artists/").permitAll()
                 .anyRequest().authenticated()
                 .and()

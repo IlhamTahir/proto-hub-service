@@ -68,6 +68,13 @@ public class ProjectController {
         return versionMapper.toVo(projectService.createVersion(id, protoId, versionCreateRequest));
     }
 
+    @GetMapping("/{id}/proto/{protoId}/version/{versionId}")
+    VersionVo getVersion(@PathVariable String id,
+                         @PathVariable String protoId,
+                         @PathVariable String versionId) {
+        return versionMapper.toVo(projectService.getVersion(id, protoId, versionId));
+    }
+
 
     @Autowired
     public void setProjectService(ProjectService projectService) {

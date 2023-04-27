@@ -18,4 +18,7 @@ public class VersionDto extends TraceableBaseDto {
     private ProtoDto proto;
 
     private FileDto file;
+
+    private String demoPath;
+
 }
