@@ -1,6 +1,5 @@
 package com.bilitech.api.proto.service.impl;
 
-import com.bilitech.api.core.dto.FileDto;
 import com.bilitech.api.core.entity.File;
 import com.bilitech.api.core.exception.BizException;
 import com.bilitech.api.core.exception.ExceptionType;
@@ -27,9 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
