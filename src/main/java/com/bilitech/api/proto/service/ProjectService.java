@@ -1,6 +1,7 @@
 package com.bilitech.api.proto.service;
 
 import com.bilitech.api.proto.dto.*;
+import com.bilitech.api.proto.enums.ProtoStatus;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
@@ -22,4 +23,10 @@ public interface ProjectService {
     VersionDto createVersion(String id, String protoId, VersionCreateRequest versionCreateRequest) throws IOException;
 
     VersionDto getVersion(String id, String protoId, String versionId);
+
+    Page<VersionDto> versionPage(String id, String protoId, VersionPageFilter versionPageFilter);
+
+    void updateProtoStatus(String id, String protoId, ProtoStatus protoStatus);
+
+    void setBaselineVersion(String id, String protoId, String versionId);
 }

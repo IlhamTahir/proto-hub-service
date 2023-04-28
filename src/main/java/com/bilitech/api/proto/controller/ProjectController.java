@@ -3,6 +3,7 @@ package com.bilitech.api.proto.controller;
 import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.core.vo.PageVo;
 import com.bilitech.api.proto.dto.*;
+import com.bilitech.api.proto.enums.ProtoStatus;
 import com.bilitech.api.proto.mapper.ProjectMapper;
 import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.mapper.VersionMapper;
@@ -75,6 +76,27 @@ public class ProjectController {
         return versionMapper.toVo(projectService.getVersion(id, protoId, versionId));
     }
 
+    @GetMapping("/{id}/proto/{protoId}/version")
+    PageVo<VersionVo> versionPage(@PathVariable String id,
+                                  @PathVariable String protoId, VersionPageFilter versionPageFilter) {
+        return new PageVo<>(projectService.versionPage(id, protoId, versionPageFilter).map(versionMapper::toVo));
+    }
+
+    @PostMapping("/{id}/proto/{protoId}/status")
+    void updateProtoStatus(@PathVariable String id,
+                           @PathVariable String protoId,
+                           @RequestBody ProtoStatusUpdateRequest protoStatusUpdateRequest
+    ) {
+        projectService.updateProtoStatus(id, protoId, protoStatusUpdateRequest.getStatus());
+    }
+
+    @PostMapping("/{id}/proto/{protoId}/baseline_version/{versionId}")
+    void setBaselineVersion(@PathVariable String id,
+                            @PathVariable String protoId,
+                            @PathVariable String versionId) {
+        projectService.setBaselineVersion(id, protoId, versionId);
+
+    }
 
     @Autowired
     public void setProjectService(ProjectService projectService) {

@@ -13,6 +13,7 @@ import com.bilitech.api.proto.entity.Project;
 import com.bilitech.api.proto.entity.Proto;
 import com.bilitech.api.proto.entity.Version;
 import com.bilitech.api.proto.enums.ProjectStatus;
+import com.bilitech.api.proto.enums.ProtoStatus;
 import com.bilitech.api.proto.mapper.ProjectMapper;
 import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.mapper.VersionMapper;
@@ -21,6 +22,7 @@ import com.bilitech.api.proto.repository.ProtoRepository;
 import com.bilitech.api.proto.repository.VersionRepository;
 import com.bilitech.api.proto.repository.specs.ProjectSpecification;
 import com.bilitech.api.proto.repository.specs.ProtoSpecification;
+import com.bilitech.api.proto.repository.specs.VersionSpecification;
 import com.bilitech.api.proto.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -152,6 +154,35 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
 
 
         return versionMapper.toDto(savedVersion);
+    }
+
+    @Override
+    public Page<VersionDto> versionPage(String id, String protoId, VersionPageFilter versionPageFilter) {
+        Project project = getProjectEntity(id);
+        Proto proto = getProtoEntity(project, protoId);
+        VersionSpecification specs = new VersionSpecification();
+        specs.add(new SearchCriteria("proto", proto, SearchOperation.EQUAL));
+
+        return versionRepository.findAll(specs, versionPageFilter.toPageable()).map(versionMapper::toDto);
+    }
+
+
+    @Override
+    public void updateProtoStatus(String id, String protoId, ProtoStatus protoStatus) {
+        Project project = getProjectEntity(id);
+        Proto proto = getProtoEntity(project, protoId);
+
+        proto.setStatus(protoStatus);
+        protoRepository.save(proto);
+    }
+
+    @Override
+    public void setBaselineVersion(String id, String protoId, String versionId) {
+        Project project = getProjectEntity(id);
+        Proto proto = getProtoEntity(project, protoId);
+        Version version = getVersionEntity(proto, versionId);
+        proto.setBaselineVersionNumber(version.getNumber());
+        protoRepository.save(proto);
     }
 
     @Override
