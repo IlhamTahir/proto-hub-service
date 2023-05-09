@@ -1,25 +1,37 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-# https://docs.github.com/cn/actions/learn-github-actions/contexts#github-context
-name: Docker Image CI
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Create and publish a Docker image
+
 
 on:
   push:
     branches:
       - main
-      - dev
+      - develop
     tags:
       - v*
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  build-and-push-image:
     runs-on: ubuntu-latest
-    env:
-      REGISTRY: docker.io
-      IMAGE_NAME: ilhamtahir/proto-hub-service
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
+
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -40,17 +52,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
-
-
-      - name: BuildDockerImage
-        run: docker build . --file Dockerfile --tag ilhamtahir/proto-hub-service:${{ github.ref_name }}
-      - name: Publish to Docker Repository
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: ilhamtahir/proto-hub-service:${{ github.ref_name }}
-          repository: ilhamtahir/proto-hub-service
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tag_semver: true
