@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.bilitech</groupId>
-    <artifactId>api</artifactId>
-    <version>0.0.1</version>
-    <name>api</name>
-    <description>api</description>
+    <artifactId>proto-hub-service</artifactId>
+    <version>1.0.1</version>
+    <name>proto-hub-service</name>
+    <description>proto-hub-service</description>
     <properties>
         <java.version>8</java.version>
     </properties>
