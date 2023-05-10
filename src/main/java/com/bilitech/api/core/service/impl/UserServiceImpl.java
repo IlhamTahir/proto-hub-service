@@ -4,11 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.bilitech.api.core.config.SecurityConfig;
 import com.bilitech.api.core.dto.*;
+import com.bilitech.api.core.entity.LdapUser;
 import com.bilitech.api.core.entity.Role;
 import com.bilitech.api.core.entity.User;
 import com.bilitech.api.core.exception.BizException;
 import com.bilitech.api.core.exception.ExceptionType;
 import com.bilitech.api.core.mapper.UserMapper;
+import com.bilitech.api.core.repository.LdapUserRepository;
 import com.bilitech.api.core.repository.RoleRepository;
 import com.bilitech.api.core.repository.UserRepository;
 import com.bilitech.api.core.repository.specs.SearchCriteria;
@@ -17,9 +19,14 @@ import com.bilitech.api.core.repository.specs.UserSpecification;
 import com.bilitech.api.core.service.RoleService;
 import com.bilitech.api.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQuery;
+import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ldap.core.DirContextAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +45,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     RoleService roleService;
 
+    LdapTemplate ldapTemplate;
+
+    LdapUserRepository ldapUserRepository;
+
+    @Value("${LDAP_ENABLED}")
+    Boolean LdapEnabled;
+
+    @Value("${LDAP_BASE}")
+    String ldapBase;
 
     @Override
     public UserDto create(UserCreateRequest userCreateRequest) {
@@ -88,12 +104,46 @@ public class UserServiceImpl extends BaseService implements UserService {
         return super.loadUserByUsername(username);
     }
 
-    @Override
-    public String createToken(TokenCreateRequest tokenCreateRequest) {
-        User user = loadUserByUsername(tokenCreateRequest.getUsername());
-        if (!passwordEncoder.matches(tokenCreateRequest.getPassword(), user.getPassword())) {
+
+    protected void checkLdapUserAuth(String username, String password) {
+        try {
+            boolean flag = ldapTemplate.authenticate("", "(uid=" + username + ")", password);
+            if (!flag) {
+                throw new BizException(ExceptionType.USER_PASSWORD_NOT_MATCH);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new BizException(ExceptionType.USER_PASSWORD_NOT_MATCH);
         }
+    }
+
+    protected User loadFromLdap(String username) {
+        Optional<User> optionalUser = repository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+        LdapUser ldapUser = ldapUserRepository.findLdapUserByUsername(username);
+        User user = new User();
+        user.setUsername(ldapUser.getUsername());
+        user.setNickname(ldapUser.getFullName());
+        user.setPassword(ldapUser.getDn().toString());
+        return repository.saveAndFlush(user);
+    }
+
+    @Override
+    public String createToken(TokenCreateRequest tokenCreateRequest) {
+        User user;
+
+        if (LdapEnabled) {
+            checkLdapUserAuth(tokenCreateRequest.getUsername(), tokenCreateRequest.getPassword());
+            user = loadFromLdap(tokenCreateRequest.getUsername());
+        } else {
+            user = loadUserByUsername(tokenCreateRequest.getUsername());
+            if (!passwordEncoder.matches(tokenCreateRequest.getPassword(), user.getPassword())) {
+                throw new BizException(ExceptionType.USER_PASSWORD_NOT_MATCH);
+            }
+        }
+
         if (!user.isEnabled()) {
             throw new BizException(ExceptionType.USER_NOT_ENABLED);
         }
@@ -121,6 +171,15 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
     }
 
+    @Autowired
+    public void setLdapTemplate(LdapTemplate ldapTemplate) {
+        this.ldapTemplate = ldapTemplate;
+    }
+
+    @Autowired
+    public void setLdapUserRepository(LdapUserRepository ldapUserRepository) {
+        this.ldapUserRepository = ldapUserRepository;
+    }
 
     @Autowired
     private void setPasswordEncoder(PasswordEncoder passwordEncoder) {
