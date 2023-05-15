@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 @RequestMapping("/files")
 public class FileController {
