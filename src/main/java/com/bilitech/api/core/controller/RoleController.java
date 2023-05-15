@@ -20,19 +20,16 @@ public class RoleController {
     RoleMapper roleMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission('user:roles')")
     public PageVo<RoleVo> search(@Validated RoleSearchFilter roleSearchFilter) {
         return new PageVo<>(roleService.search(roleSearchFilter).map(roleMapper::toVo));
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission('user:roles:create')")
     RoleVo create(@Validated @RequestBody RoleCreateRequest roleCreateRequest) {
         return roleMapper.toVo(roleService.create(roleCreateRequest));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission('user:roles:edit')")
     RoleVo update(@PathVariable String id, @Validated @RequestBody RoleUpdateRequest roleUpdateRequest) {
         return roleMapper.toVo(roleService.update(id, roleUpdateRequest));
     }
