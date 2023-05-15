@@ -15,7 +15,6 @@ public abstract class BaseService {
 
     private UserRepository userRepository;
 
-    private User currentUser;
 
     protected boolean isUserExisted(String id) {
         Optional<User> user = userRepository.findById(id);
@@ -33,12 +32,8 @@ public abstract class BaseService {
 
 
     protected User getCurrentUserEntity() {
-        if (this.currentUser != null) {
-            return currentUser;
-        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        currentUser = loadUserByUsername(authentication.getName());
-        return currentUser;
+        return loadUserByUsername(authentication.getName());
     }
 
     protected User loadUserByUsername(String username) {
