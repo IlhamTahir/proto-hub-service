@@ -1,6 +1,8 @@
 package com.bilitech.api.core.utils;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +29,7 @@ public class ZipUtil {
 
         String indexPath = null;
 
-        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+        try (ZipFile zipFile = new ZipFile(zipFilePath, Charset.forName("GBK"))) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
