@@ -7,4 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class UserSearchFilter extends BaseSearchFilter {
     private String username;
+
+    private String nickname;
 }

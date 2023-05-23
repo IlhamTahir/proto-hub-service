@@ -93,8 +93,11 @@ public class UserServiceImpl extends BaseService implements UserService {
     public Page<UserDto> search(UserSearchFilter userSearchFilter) {
         UserSpecification specs = new UserSpecification();
 //        // ToDo: 需要重构
-        if (!Objects.equals(userSearchFilter.getUsername(), "")) {
+        if (userSearchFilter.getUsername() != null && !Objects.equals(userSearchFilter.getUsername(), "")) {
             specs.add(new SearchCriteria("username", userSearchFilter.getUsername(), SearchOperation.MATCH));
+        }
+        if (userSearchFilter.getNickname() != null  && !Objects.equals(userSearchFilter.getNickname(), "")) {
+            specs.add(new SearchCriteria("nickname", userSearchFilter.getNickname(), SearchOperation.MATCH));
         }
         return repository.findAll(specs, userSearchFilter.toPageable()).map(mapper::toDto);
     }
