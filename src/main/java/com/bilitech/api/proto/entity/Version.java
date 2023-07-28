@@ -4,9 +4,8 @@ import com.bilitech.api.core.entity.File;
 import com.bilitech.api.core.entity.TraceableBaseEntity;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +22,10 @@ public class Version extends TraceableBaseEntity {
     @OneToOne
     @JoinColumn(name = "file_id")
     private File file;
+
+    @ManyToOne
+    @JoinColumn(name = "stage_id")
+    private Stage stage;
 
     private String demoPath;
 }

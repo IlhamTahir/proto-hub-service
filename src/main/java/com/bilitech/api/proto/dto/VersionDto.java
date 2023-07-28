@@ -21,4 +21,6 @@ public class VersionDto extends TraceableBaseDto {
 
     private String demoPath;
 
+    private StageDto stage;
+
 }

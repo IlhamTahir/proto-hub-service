@@ -17,5 +17,5 @@ public class VersionVo extends TraceableBaseVo{
 
     private String demoPath;
 
-
+    private StageVo stageVo;
 }

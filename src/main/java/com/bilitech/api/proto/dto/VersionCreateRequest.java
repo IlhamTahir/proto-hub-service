@@ -14,4 +14,7 @@ public class VersionCreateRequest {
 
     @NotBlank(message = "请选择原型文件")
     private String fileId;
+
+    @NotBlank(message = "请选择迭代阶段")
+    private String stageId;
 }

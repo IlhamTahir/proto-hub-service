@@ -11,6 +11,7 @@ import com.bilitech.api.core.utils.ZipUtil;
 import com.bilitech.api.proto.dto.*;
 import com.bilitech.api.proto.entity.Project;
 import com.bilitech.api.proto.entity.Proto;
+import com.bilitech.api.proto.entity.Stage;
 import com.bilitech.api.proto.entity.Version;
 import com.bilitech.api.proto.enums.ProjectStatus;
 import com.bilitech.api.proto.enums.ProtoStatus;
@@ -29,8 +30,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl extends BaseService implements ProjectService {
@@ -216,6 +220,18 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
             throw new BizException(ExceptionType.NOT_FOUND);
         }
         return optionalVersion.get();
+    }
+
+    @Override
+    public List<VersionDto> findVersionListInStageIds(String id, String protoId,List<String> stageIds) {
+        List<Stage> stages = new ArrayList<>();
+        for (String stageId :stageIds) {
+            Stage stage = new Stage();
+            stage.setId(stageId);
+            stages.add(stage);
+        }
+        Proto proto = getProtoEntity(getProjectEntity(id), protoId);
+        return versionRepository.findAllByProtoAndStageIn(proto, stages).stream().map(versionMapper::toDto).collect(Collectors.toList());
     }
 
     @Autowired

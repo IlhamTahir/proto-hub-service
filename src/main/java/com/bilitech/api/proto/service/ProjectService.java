@@ -2,9 +2,11 @@ package com.bilitech.api.proto.service;
 
 import com.bilitech.api.proto.dto.*;
 import com.bilitech.api.proto.enums.ProtoStatus;
+import com.bilitech.api.proto.vo.VersionVo;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface ProjectService {
     ProjectDto create(ProjectCreateRequest projectCreateRequest);
@@ -29,4 +31,6 @@ public interface ProjectService {
     void updateProtoStatus(String id, String protoId, ProtoStatus protoStatus);
 
     void setBaselineVersion(String id, String protoId, String versionId);
+
+    List<VersionDto> findVersionListInStageIds(String id, String protoId,List<String> stageIds);
 }

@@ -12,11 +12,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, FileMapper.class},
+@Mapper(componentModel = "spring", uses = {UserMapper.class, FileMapper.class, StageMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface VersionMapper extends MapperInterface<Version, VersionDto, VersionVo> {
 
     @Mapping(source = "fileId", target = "file.id")
+    @Mapping(source = "stageId", target = "stage.id")
     Version createEntity(VersionCreateRequest versionCreateRequest);
 }

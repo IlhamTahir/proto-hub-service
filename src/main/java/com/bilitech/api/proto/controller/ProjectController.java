@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/projects")
@@ -80,6 +82,13 @@ public class ProjectController {
     PageVo<VersionVo> versionPage(@PathVariable String id,
                                   @PathVariable String protoId, VersionPageFilter versionPageFilter) {
         return new PageVo<>(projectService.versionPage(id, protoId, versionPageFilter).map(versionMapper::toVo));
+    }
+
+    @GetMapping("/{id}/proto/{protoId}/version-in-stage-ids")
+    List<VersionVo> versionListInStageIds(@PathVariable String id,
+                                          @PathVariable String protoId,
+                                          @RequestParam List<String> stageIds) {
+        return projectService.findVersionListInStageIds(id, protoId, stageIds).stream().map(versionMapper::toVo).collect(Collectors.toList());
     }
 
     @PostMapping("/{id}/proto/{protoId}/status")
