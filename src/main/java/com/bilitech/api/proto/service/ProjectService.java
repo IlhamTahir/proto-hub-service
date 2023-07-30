@@ -1,6 +1,7 @@
 package com.bilitech.api.proto.service;
 
 import com.bilitech.api.proto.dto.*;
+import com.bilitech.api.proto.entity.Version;
 import com.bilitech.api.proto.enums.ProtoStatus;
 import com.bilitech.api.proto.vo.VersionVo;
 import org.springframework.data.domain.Page;
@@ -33,4 +34,6 @@ public interface ProjectService {
     void setBaselineVersion(String id, String protoId, String versionId);
 
     List<VersionDto> findVersionListInStageIds(String id, String protoId,List<String> stageIds);
+
+    VersionDto getVersionByStageId(String id, String protoId, String stageId);
 }

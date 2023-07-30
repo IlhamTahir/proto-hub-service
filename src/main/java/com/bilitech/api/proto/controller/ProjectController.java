@@ -1,9 +1,7 @@
 package com.bilitech.api.proto.controller;
 
-import com.bilitech.api.core.dto.PageResult;
 import com.bilitech.api.core.vo.PageVo;
 import com.bilitech.api.proto.dto.*;
-import com.bilitech.api.proto.enums.ProtoStatus;
 import com.bilitech.api.proto.mapper.ProjectMapper;
 import com.bilitech.api.proto.mapper.ProtoMapper;
 import com.bilitech.api.proto.mapper.VersionMapper;
@@ -89,6 +87,13 @@ public class ProjectController {
                                           @PathVariable String protoId,
                                           @RequestParam List<String> stageIds) {
         return projectService.findVersionListInStageIds(id, protoId, stageIds).stream().map(versionMapper::toVo).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}/proto/{protoId}/version-by-stage")
+    VersionVo getVersionByStageId(@PathVariable String id,
+                                  @PathVariable String protoId,
+                                  @RequestParam String stageId) {
+        return versionMapper.toVo(projectService.getVersionByStageId(id, protoId, stageId));
     }
 
     @PostMapping("/{id}/proto/{protoId}/status")

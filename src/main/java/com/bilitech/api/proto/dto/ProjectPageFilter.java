@@ -7,4 +7,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProjectPageFilter extends BaseSearchFilter {
+    private String filterType = "all";
 }

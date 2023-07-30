@@ -17,4 +17,5 @@ public interface VersionRepository extends JpaRepository<Version, String>, JpaSp
 
     List<Version> findAllByProtoAndStageIn(Proto proto, List<Stage> stages);
 
+    Version getFirstByProtoAndStageOrderByCreatedTimeDesc(Proto proto, Stage stage);
 }

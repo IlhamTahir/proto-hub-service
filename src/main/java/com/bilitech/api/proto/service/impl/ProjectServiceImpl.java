@@ -82,6 +82,10 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
     @Override
     public Page<ProjectDto> page(ProjectPageFilter projectPageFilter) {
         ProjectSpecification specification = new ProjectSpecification();
+
+        if (Objects.equals(projectPageFilter.getFilterType(), "onlyMe")) {
+            specification.add(new SearchCriteria("productOwner",getCurrentUserEntity(), SearchOperation.EQUAL ));
+        }
         return repository.findAll(specification, projectPageFilter.toPageable()).map(mapper::toDto);
     }
 
@@ -232,6 +236,15 @@ public class ProjectServiceImpl extends BaseService implements ProjectService {
         }
         Proto proto = getProtoEntity(getProjectEntity(id), protoId);
         return versionRepository.findAllByProtoAndStageIn(proto, stages).stream().map(versionMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public VersionDto getVersionByStageId(String id, String protoId,String stageId) {
+        Stage stage = new Stage();
+        stage.setId(stageId);
+        Proto proto = getProtoEntity(getProjectEntity(id), protoId);
+
+        return versionMapper.toDto(versionRepository.getFirstByProtoAndStageOrderByCreatedTimeDesc(proto,stage));
     }
 
     @Autowired
